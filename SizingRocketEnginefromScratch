@@ -84,3 +84,9 @@ disp(['Mass flow rate (m dot) equals ', num2str(m_dot), ' kg/s']);
 %% Section 7: Area Ratio
 area_ratio = (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me^2))^((gamma + 1) / (2 * (gamma - 1)));
 disp(['Area ratio of the exhaust relative to the throat is ', num2str(area_ratio)]);
+
+%testing commits
+
+
+%git config --global user.email "you@example.com"
+%git config --global user.name "Your Name"
