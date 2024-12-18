@@ -1,0 +1,86 @@
+%% Lec0 - Sizing a Rocket Engine from Scratch
+%% by Christian Miranda
+
+F = 250;
+
+% goal: solve for exhaust velocity, V_e
+%% Section 1: Solving for R_gamma
+% equation: R_gamma = R_u / M_bar
+
+%given:
+R_u = 8.314; % j/mol*k
+
+%given:
+mm_N2 = 28.01 / 1000;
+mm_CO2 = 44.01 / 1000;
+mm_H2O = 18.02 / 1000;
+N2_co = 9;
+CO2_co = 3;
+H2O_co = 4;
+
+M_bar = ((N2_co * mm_N2) + (CO2_co * mm_CO2) + (H2O_co * mm_H2O)) / ...
+        (N2_co + CO2_co + H2O_co);
+R_gamma = R_u / M_bar;
+
+%% Section 2: Solving for gamma
+% Equation 1: gamma = (sum n*C_p) / (sum n*C_v)
+% Equation 2: C_v = C_p - R_gamma
+
+%given: (converted to J/(mol*K)):
+Cp_N2 = 1.039 * 1000;
+Cp_CO2 = 0.846 * 1000;
+Cp_H2O = 1.8723 * 1000;
+
+Cv_N2 = Cp_N2 - R_gamma;
+Cv_CO2 = Cp_CO2 - R_gamma;
+Cv_H2O = Cp_H2O - R_gamma;
+
+gamma_num = (Cp_N2 * N2_co) + (Cp_CO2 * CO2_co) + (Cp_H2O * H2O_co);
+gamma_denom = (Cv_N2 * N2_co) + (Cv_CO2 * CO2_co) + (Cv_H2O * H2O_co);
+gamma = gamma_num / gamma_denom; % unitless
+
+%% Section 3: Solving for T_o
+% Equation 1: T_o = T_i + deltaH_comb / sum (n * Cp)
+% Equation 2: deltaH_comb = deltaH_sumP - deltaH_sumR
+
+%given: (J/mol)
+deltaH_IPA = -272.8 * 1000;
+deltaH_N2O = 82.05 * 1000;
+deltaH_N2 = 0;
+deltaH_CO2 = -393.51 * 1000;
+deltaH_H2O = -241.82 * 1000;
+T_i = 298;
+
+deltaH_prod = (N2_co * deltaH_N2) + (CO2_co * deltaH_CO2) + (H2O_co * deltaH_H2O);
+deltaH_reac = deltaH_IPA + (N2_co * deltaH_N2O);
+deltaH_comb = deltaH_prod - deltaH_reac;
+
+T_o = T_i + (deltaH_comb / gamma_num);
+
+%% Section 4: Solving for P_e
+% assume Me = 2.5 -- seems standard
+% P_o = atmospheric pressure ~ 101.3 kPa
+
+P_o = 101300;
+Me = 2.5;
+
+%P_e = (1+((gamma - 1)/2)*Me^2)^(-gamma /(gamma-1))*P_o;
+%thomas said Pe = Po at max efficiency and so im testing the idealized case
+%new eq below:
+P_e = P_o;
+
+%% Section 5: Solving for Exhaust Velocity
+
+%V_e = sqrt((2*R_gamma*T_o/M_bar)*(1-(P_e / P_o)^((gamma - 1)/gamma)));
+%new eq below:
+V_e = sqrt((2 * gamma / (gamma - 1)) * R_gamma * T_o);
+disp(['Exhaust velocity, V_e = ', num2str(V_e), ' m/s']);
+
+%% Section 6: Solving for M dot
+m_dot = F/V_e;
+disp(['Mass flow rate (m dot) equals ', num2str(m_dot), ' kg/s']);
+
+
+%% Section 7: Area Ratio
+area_ratio = (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me^2))^((gamma + 1) / (2 * (gamma - 1)));
+disp(['Area ratio of the exhaust relative to the throat is ', num2str(area_ratio)]);
