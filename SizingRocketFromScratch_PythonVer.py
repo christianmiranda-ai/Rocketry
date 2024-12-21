@@ -8,6 +8,10 @@ import matplotlib.pyplot
 # Desired thrust in Newtons
 F = input("Enter desired thrust (N): ")
 
+#O/F ratio:
+#by the stoichiometry, ideal O/F ratio is 9:1. so right now im assuming fuel rich is better therefore 7:1...
+OF_ratio = 7
+
 #propellant mass calculation:
 #given: (Vol adjustable by tank) #YOU choose propellant amount.
 Vol_N2O = input("Enter the N2O tank size (L) that you purchased: ") # in liters
@@ -16,17 +20,17 @@ rho_N2O = 1.23 # kg/L
 m_oxidizer = rho_N2O*Vol_N2O
 
 # 128 oz of IPA easily sourcable
-Vol_IPA = input("Enter the IPA tank size (L) that you purchased: ") #in liters
-Vol_IPA = float(Vol_IPA)
+# switching to a O/F driving model
+m_fuel = m_oxidizer / OF_ratio
 rho_IPA = 0.786 #kg/L
-m_fuel = rho_IPA*Vol_IPA
 
-#O/F ratio:
-#by the stoichiometry, ideal O/F ratio is 9:1. so right now im assuming fuel rich is better therefore 7:1...
-OF_ratio = 7
+Vol_IPA = m_fuel / rho_IPA
+# Vol_IPA = math.ceil(Vol_IPA)
 
-
-
+# Vol_IPA = input("Enter the IPA tank size (L) that you purchased: ") #in liters
+# Vol_IPA = float(Vol_IPA)
+# rho_IPA = 0.786 #kg/L
+# m_fuel = rho_IPA*Vol_IPA
 
 # %% 
 # Section 1: Solving for R_gamma
@@ -96,9 +100,6 @@ P_e = P_o
 # %% 
 # Section 5: Solving for V_e (exhaust velocity)
 V_e = math.sqrt((2 * gamma / (gamma - 1)) * R_gamma * T_o)
-print()
-print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]')
-print()
 
 # %%
 
@@ -106,8 +107,6 @@ print()
 
 # Section 6: Solving for Mass Flow Rate
 m_dot = float(F) / V_e
-print(f'Mass flow rate equals {m_dot:.5f} kg/s')
-print()
 
 # Section 7: Area Ratio (A/A*)
 #equation 1: (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me**2))**((gamma + 1) / (2 * (gamma - 1)))
@@ -116,39 +115,8 @@ print()
 Me = 2.5  # mach number at exhaust
 
 area_ratio = (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me**2))**((gamma + 1) / (2 * (gamma - 1)))
-print(f'Area ratio of the exhaust relative to the throat is {area_ratio:.3f}')
-print()
 
 # LOOP ENDS! ------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # # 1 lb-f = 4.448 N
 
@@ -190,19 +158,40 @@ print()
 # rho_IPA = 0.786 #kg/L
 # m_fuel = rho_IPA*Vol_IPA
 # print(f'The estimated IPA propellant mass required from the tank size you purchased is {m_fuel:.2f} kg')
-
+1
 # #O/F ratio:
 # #by the stoichiometry, ideal O/F ratio is 9:1. so right now im assuming fuel rich is better therefore 7:1...
 # OF_ratio = 7
 
-print(f'The estimated N2O propellant mass required from the tank size you purchased is {m_oxidizer:.2f} kg')
-print()
-
-print(f'The estimated IPA propellant mass required from the tank size you purchased is {m_fuel:.2f} kg')
-print()
-
 m_dot_oxidizer = (OF_ratio * m_dot) / (1 + OF_ratio)
 m_dot_fuel = m_dot / (1 + OF_ratio)
+
+#mass calcs
+m_prop_total = m_oxidizer + m_fuel
+m_dot_total = m_dot_oxidizer + m_dot_fuel
+
+# burn time:
+t_burn = m_prop_total / m_dot_total
+
+
+
+
+######################################
+# all prints here:
+
+print()
+print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]')
+print()
+
+print(f'Mass flow rate equals {m_dot:.5f} kg/s')
+print()
+
+print(f'Area ratio of the exhaust relative to the throat is {area_ratio:.3f}')
+print()
+
+
+
+
 
 print(f'The expected mass flow rate for the oxidizer is {m_dot_oxidizer:.5f} in kg/s')
 print()
@@ -210,6 +199,4 @@ print()
 print(f'The expected mass flow rate for the fuel is  {m_dot_fuel:.5f} in kg/s')
 print()
 
-
-
-
+print(f'The expected burn time for this engine is {t_burn:.2f} seconds')
