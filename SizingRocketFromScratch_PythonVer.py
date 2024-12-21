@@ -8,6 +8,26 @@ import matplotlib.pyplot
 # Desired thrust in Newtons
 F = input("Enter desired thrust (N): ")
 
+#propellant mass calculation:
+#given: (Vol adjustable by tank) #YOU choose propellant amount.
+Vol_N2O = input("Enter the N2O tank size (L) that you purchased: ") # in liters
+Vol_N2O = float(Vol_N2O)
+rho_N2O = 1.23 # kg/L
+m_oxidizer = rho_N2O*Vol_N2O
+
+# 128 oz of IPA easily sourcable
+Vol_IPA = input("Enter the IPA tank size (L) that you purchased: ") #in liters
+Vol_IPA = float(Vol_IPA)
+rho_IPA = 0.786 #kg/L
+m_fuel = rho_IPA*Vol_IPA
+
+#O/F ratio:
+#by the stoichiometry, ideal O/F ratio is 9:1. so right now im assuming fuel rich is better therefore 7:1...
+OF_ratio = 7
+
+
+
+
 # %% 
 # Section 1: Solving for R_gamma
 # equation: R_gamma = R_u / M_bar
@@ -65,7 +85,7 @@ deltaH_reac = deltaH_IPA + (N2_co * deltaH_N2O)
 deltaH_comb = deltaH_prod - deltaH_reac
 
 T_i = 298.15  #initial ambient temp (77 F | 25 C)
-T_o = T_i + (deltaH_comb / gamma_num) #flame temp
+T_o = T_i + (deltaH_comb / gamma_num) #stagnation temperature
 
 # %% 
 # Section 4: Solving for P_e (exhaust pressure)
@@ -76,55 +96,119 @@ P_e = P_o
 # %% 
 # Section 5: Solving for V_e (exhaust velocity)
 V_e = math.sqrt((2 * gamma / (gamma - 1)) * R_gamma * T_o)
-print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s')
+print()
+print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]')
 print()
 
 # %%
 
-# LOOP BEGINS!
+# LOOP BEGINS! ----------------------------------
 
 # Section 6: Solving for Mass Flow Rate
 m_dot = float(F) / V_e
 print(f'Mass flow rate equals {m_dot:.5f} kg/s')
 print()
 
-# Section 7: Area Ratio
-Me = 2.5  # Mach number at the exhaust
+# Section 7: Area Ratio (A/A*)
+#equation 1: (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me**2))**((gamma + 1) / (2 * (gamma - 1)))
+
+#given:
+Me = 2.5  # mach number at exhaust
 
 area_ratio = (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me**2))**((gamma + 1) / (2 * (gamma - 1)))
 print(f'Area ratio of the exhaust relative to the throat is {area_ratio:.3f}')
 print()
 
-
-# LOOP ENDS!
-
-# 1 lb-f = 4.448 N
-
-if 100 <= float(F) <= 1000:
-    # Convert F to float for calculations
-    F_new = float(F)
-    F_end = F_new * 10
-    F_step = 100
-
-    # iteration
-    for i in range(int(F_new), int(F_end), int(F_step)):
-        m_dot_new = i / V_e  # Use i instead of F_new for calculations
-        print(f"For Thrust {i} N, Mass Flow Rate: {m_dot_new:.5f} kg/s")
-
-    
-# elif 1001 < F < 5000:
-#     #breh
-#     F_new = F
-#     F_end = F*5
-#     F_step = 450
-
-#     for i in range(F_new, F_end, F_step):
-#         m_dot_new = F_new/
+# LOOP ENDS! ------------------------------------
 
 
 
 
-# %%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # 1 lb-f = 4.448 N
+
+# if 100 <= float(F) <= 1000:
+#     F_new = float(F)
+#     F_end = F_new * 10
+#     F_step = 100
+
+#     # iteration
+#     for i in range(int(F_new), int(F_end), int(F_step)):
+#         m_dot_new = i / V_e
+#         print(f"For Thrust {i} N, Mass Flow Rate: {m_dot_new:.5f} kg/s")
+
+# elif 1001 <= float(F) <= 10000:
+#     F_new = float(F)
+#     F_end = F_new * 10
+#     F_step = 500
+
+#     for i in range(int(F_new), int(F_end), int(F_step)):
+#         m_dot_new = i / V_e
+#         print(f"For Thrust {i} N, Mass Flow Rate: {m_dot_new:.5f} kg/s")
+
+# 
+
+
+
+
+
+# #propellant mass calculation:
+# #given: (Vol adjustable by tank) #YOU choose propellant amount.
+# Vol_N2O = input("Enter the N2O tank size (L) that you purchased: ") # in liters
+# rho_N2O = 1.23 # kg/L
+# m_oxidizer = rho_N2O*Vol_N2O
+# print(f'The estimated N2O propellant mass required from the tank size you purchased is {m_oxidizer:.2f} kg')
+# print()
+
+# # 128 oz of IPA easily sourcable
+# Vol_IPA = input("Enter the IPA tank size (L) that you purchased: ") #in liters
+# rho_IPA = 0.786 #kg/L
+# m_fuel = rho_IPA*Vol_IPA
+# print(f'The estimated IPA propellant mass required from the tank size you purchased is {m_fuel:.2f} kg')
+
+# #O/F ratio:
+# #by the stoichiometry, ideal O/F ratio is 9:1. so right now im assuming fuel rich is better therefore 7:1...
+# OF_ratio = 7
+
+print(f'The estimated N2O propellant mass required from the tank size you purchased is {m_oxidizer:.2f} kg')
+print()
+
+print(f'The estimated IPA propellant mass required from the tank size you purchased is {m_fuel:.2f} kg')
+print()
+
+m_dot_oxidizer = (OF_ratio * m_dot) / (1 + OF_ratio)
+m_dot_fuel = m_dot / (1 + OF_ratio)
+
+print(f'The expected mass flow rate for the oxidizer is {m_dot_oxidizer:.5f} in kg/s')
+print()
+
+print(f'The expected mass flow rate for the fuel is  {m_dot_fuel:.5f} in kg/s')
+print()
 
 
 
