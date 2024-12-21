@@ -106,9 +106,10 @@ if 100 <= float(F) <= 1000:
     F_end = F*10
     F_step = 100
     
-    for i in range(F_new, F_end, F_step):
-        m_dot_new = F_new / V_e
+    for i in range(int(F_new), int(F_end), int(F_step)):
+        m_dot_new = float(F_new) / V_e
         print(m_dot_new)
+    
 # elif 1001 < F < 5000:
 #     #breh
 #     F_new = F
