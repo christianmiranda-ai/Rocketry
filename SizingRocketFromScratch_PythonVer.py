@@ -101,14 +101,16 @@ print()
 # 1 lb-f = 4.448 N
 
 if 100 <= float(F) <= 1000:
-    #breh
-    F_new = F
-    F_end = F*10
+    # Convert F to float for calculations
+    F_new = float(F)
+    F_end = F_new * 10
     F_step = 100
-    
+
+    # iteration
     for i in range(int(F_new), int(F_end), int(F_step)):
-        m_dot_new = float(F_new) / V_e
-        print(m_dot_new)
+        m_dot_new = i / V_e  # Use i instead of F_new for calculations
+        print(f"For Thrust {i} N, Mass Flow Rate: {m_dot_new:.5f} kg/s")
+
     
 # elif 1001 < F < 5000:
 #     #breh
