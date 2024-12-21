@@ -1,7 +1,9 @@
 %% Lec0 - Sizing a Rocket Engine from Scratch
 %% by Christian Miranda
 
-F = 250;
+F = input('Enter desired thrust (N): ');
+T_i = input('Enter ambient temperature conditions (K): ');
+P_o = input('Enter atmospheric pressure conditions (Pa): ');
 
 % goal: solve for exhaust velocity, V_e
 %% Section 1: Solving for R_gamma
@@ -49,7 +51,6 @@ deltaH_N2O = 82.05 * 1000;
 deltaH_N2 = 0;
 deltaH_CO2 = -393.51 * 1000;
 deltaH_H2O = -241.82 * 1000;
-T_i = 298;
 
 deltaH_prod = (N2_co * deltaH_N2) + (CO2_co * deltaH_CO2) + (H2O_co * deltaH_H2O);
 deltaH_reac = deltaH_IPA + (N2_co * deltaH_N2O);
@@ -61,7 +62,6 @@ T_o = T_i + (deltaH_comb / gamma_num);
 % assume Me = 2.5 -- seems standard
 % P_o = atmospheric pressure ~ 101.3 kPa
 
-P_o = 101300;
 Me = 2.5;
 
 %P_e = (1+((gamma - 1)/2)*Me^2)^(-gamma /(gamma-1))*P_o;
@@ -85,10 +85,18 @@ disp(['Mass flow rate (m dot) equals ', num2str(m_dot), ' kg/s']);
 area_ratio = (1 / Me) * ((2 / (gamma + 1)) * (1 + ((gamma - 1) / 2) * Me^2))^((gamma + 1) / (2 * (gamma - 1)));
 disp(['Area ratio of the exhaust relative to the throat is ', num2str(area_ratio)]);
 
-%testing commits
 
 
-%git config --global user.email "you@example.com"
-%git config --global user.name "Your Name"
 
-%additional test brah
+
+
+
+
+
+
+
+
+
+
+
+
