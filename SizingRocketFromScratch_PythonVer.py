@@ -7,7 +7,8 @@ import matplotlib.pyplot
 
 # Desired thrust in Newtons
 F = input("Enter desired thrust (N): ")
-
+F = float(F)
+g_o = 9.81 # acceleration due to gravity (m/s^2)
 #O/F ratio:
 #by the stoichiometry, ideal O/F ratio is 9:1. so right now im assuming fuel rich is better therefore 7:1...
 OF_ratio = 7
@@ -173,30 +174,59 @@ m_dot_total = m_dot_oxidizer + m_dot_fuel
 # burn time:
 t_burn = m_prop_total / m_dot_total
 
-
+#specific impulse calc:
+I_sp = F / ((m_dot_total) * g_o)
 
 
 ######################################
 # all prints here:
 
-print()
-print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]')
-print()
+#exhaust velocity print
 
-print(f'Mass flow rate equals {m_dot:.5f} kg/s')
-print()
+# print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]')
+# print()
 
-print(f'Area ratio of the exhaust relative to the throat is {area_ratio:.3f}')
-print()
+# #exhaust velocity print
+# print(f'Total Mass flow rate equals {m_dot:.5f} kg/s')
+# print()
 
+# print(f'Area ratio of the exhaust relative to the throat is {area_ratio:.3f}')
+# print()
 
+# print(f'The expected mass flow rate for the oxidizer is {m_dot_oxidizer:.5f} in kg/s')
+# print()
 
+# print(f'The expected mass flow rate for the fuel is  {m_dot_fuel:.5f} in kg/s')
+# print()
 
+# print(f'The expected burn time for this engine is {t_burn:.2f} seconds')
+# print()
 
-print(f'The expected mass flow rate for the oxidizer is {m_dot_oxidizer:.5f} in kg/s')
-print()
+# print(f'The expected Specific Impulse for this engine is {I_sp:.2f} seconds')
 
-print(f'The expected mass flow rate for the fuel is  {m_dot_fuel:.5f} in kg/s')
-print()
+print(f"""
+IMPORTANT: The following data represents the computed engine performance parameters.
 
-print(f'The expected burn time for this engine is {t_burn:.2f} seconds')
+THEORETICAL ROCKET PERFORMANCE ASSUMING EQUILIBRIUM COMPOSITION
+***************************************************************
+
+Exhaust Velocity:
+    V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]
+
+Mass Flow Rates:
+    Total Mass Flow Rate, m_dot = {m_dot:.5f} kg/s
+    Oxidizer Mass Flow Rate, m_dot_oxidizer = {m_dot_oxidizer:.5f} kg/s
+    Fuel Mass Flow Rate, m_dot_fuel = {m_dot_fuel:.5f} kg/s
+
+Area Ratio:
+    Exhaust Area Ratio to Throat, Ae/At = {area_ratio:.3f}
+
+Burn Time:
+    t_burn = {t_burn:.2f} seconds
+
+Performance Parameters:
+    Specific Impulse, I_sp = {I_sp:.2f} seconds
+
+END OF PERFORMANCE REPORT
+***************************************************************
+""")
