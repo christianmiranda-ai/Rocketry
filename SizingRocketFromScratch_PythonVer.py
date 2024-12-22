@@ -91,7 +91,7 @@ deltaH_prod = (N2_co * deltaH_N2) + (CO2_co * deltaH_CO2) + (H2O_co * deltaH_H2O
 deltaH_reac = deltaH_IPA + (N2_co * deltaH_N2O)
 deltaH_comb = deltaH_prod - deltaH_reac
 
-T_i = 298.15  #initial ambient temp (77 F | 25 C)
+T_i = 298  #initial ambient temp (77 F | 25 C)
 T_o = T_i + (deltaH_comb / gamma_num) #stagnation temperature
 
 # ---------------------------------------------------------------------------------------------------
@@ -189,31 +189,13 @@ t_burn = m_prop_total / m_dot_total
 I_sp = F / ((m_dot_total) * g_o)
 
 # ---------------------------------------------------------------------------------------------------
+# %%
+# chamber pressure calculation
 
-# Printing Section:
-
-#exhaust velocity print
-
-# print(f'Exhaust Velocity, V_e = {V_e:.2f} m/s [Mach {(V_e * 0.00291545):.2f}]')
-# print()
-
-# #exhaust velocity print
-# print(f'Total Mass flow rate equals {m_dot:.5f} kg/s')
-# print()
-
-# print(f'Area ratio of the exhaust relative to the throat is {area_ratio:.3f}')
-# print()
-
-# print(f'The expected mass flow rate for the oxidizer is {m_dot_oxidizer:.5f} in kg/s')
-# print()
-
-# print(f'The expected mass flow rate for the fuel is  {m_dot_fuel:.5f} in kg/s')
-# print()
-
-# print(f'The expected burn time for this engine is {t_burn:.2f} seconds')
-# print()
-
-# print(f'The expected Specific Impulse for this engine is {I_sp:.2f} seconds')
+P_c = P_e * ( (2 * gamma) / (gamma + 1) ) ** (gamma / (gamma - 1)) * area_ratio 
+#rework
+# %%
+# ---------------------------------------------------------------------------------------------------
 
 print(f"""
 IMPORTANT: The following data represents the computed engine performance parameters.
@@ -235,8 +217,12 @@ Area Ratio:
 Burn Time:
     t_burn = {t_burn:.2f} seconds
 
-Performance Parameters:
+Specific Impulse:
     Specific Impulse, I_sp = {I_sp:.2f} seconds
+
+    
+Combustion Pressure:
+    Combustion Chamber Pressure, P_c = {P_c:.2f} Pa
 
 END OF PERFORMANCE REPORT
 ***************************************************************
