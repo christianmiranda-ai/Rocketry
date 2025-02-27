@@ -45,9 +45,9 @@ delta_p = 1 # change in pressure (Pa) -- define later
 Q = 1 # volumetric flow rate (m^3) -- define later
 
 delta_H = delta_p / g_constant # change in fluid head equation (m)
-Omega_s = omega * math.sqrt(Q) / (g*delta_H)^(3/4) # specific speed equation (unitless)
+Omega_s = (omega * math.sqrt(Q) / ((g*delta_H)**(3/4))) # specific speed equation (unitless)
 phi_t = 0.1715*math.sqrt(Omega_s) # exit flow coefficient equation (unitless)
-psi = 0.4 / (Omega_s)^(1/4) # Head coefficient equation (unitless)
+psi = (0.4 / ((Omega_s)**(1/4))) # Head coefficient equation (unitless)
 
 # ---------------------------------------------------------------------------------------------------
 
@@ -57,9 +57,9 @@ psi = 0.4 / (Omega_s)^(1/4) # Head coefficient equation (unitless)
 phi_e = 0.25 # eye flow coefficient (unitless) -- this value was CHOSEN per Section 0 range
 r_inner = 1 # inner radius (m) -- define later
 
-r_eye = (Q / (math.pi * omega *phi_e)*(1 - ((r_inner)^2 / (r_eye)^2))) # eye radius equation (m) -- use MATLAB solver?
+r_eye = (Q / (math.pi * omega *phi_e)*(1 - ((r_inner**2) / (r_eye**2)))) # eye radius equation (m) -- use MATLAB solver?
 r_exit = ((1/omega)*math.sqrt(g_constant*delta_H/psi)) # exit radius equation (m)
-w_exit = (Q / 2*math.pi*omega*(r_exit^2)*phi_e) # exit width (m) 
+w_exit = (Q / 2*math.pi*omega*(r_exit**2)*phi_e) # exit width (m) 
 
 # ---------------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ U_inlet = ((omega/r_eye)) # tangential velocity at inlet equation (m/s)
 V_inlet = ((Q)/(2 * math.pi * r_eye * b_eye)) # axial velocity at inlet equation (m/s)
 
 beta_inlet = math.atan(U_inlet / V_inlet) # inlet angle equation (degrees)
-eta_HY = 1 - (0.071 / (Q^0.25)) # jekat's formula (unitless) -- combined hydraulic efficiency
+eta_HY = 1 - (0.071 / (Q**0.25)) # jekat's formula (unitless) -- combined hydraulic efficiency
 beta_outlet = math.atan((Q / (2*math.pi*r_exit*w_exit)) / (omega*r_exit*(1 - mu) - ((g_constant*delta_p) / (eta_HY * omega * r_exit))))
 # outlet angle equation (degrees)
 
@@ -93,13 +93,26 @@ sigma = 2.5 # solidity (unitless) -- this value was CHOSEN per Section 0 range
 N = 6 # number of blades (unitless, obv) -- this value was CHOSEN per Section 0 range
 
 beta_blade = alpha_lil / beta_lil # blade angle (degrees)
-NPSH_se = (1.2*(phi_e^2) + (0.2334 + ((ang_vel*r) / 128.3)^4)*((phi_e^2)+1)) # net positive suction head equation (m)
-S_s = ((n*Q)^(1/2) / (NPSH_se)^(3/4)) # suction specific speed equation (unitless)
-phi_opt = (1.3077 * math.sqrt(1 - (v^2)) / (1 + (1/2)*math.sqrt(1 + 10.261*(1 - (v^2)) / S_s))) # optimal flow coefficient (unitless)
-r_tip = ((1.449)*((Q) / (1 - (v^2)*omega*phi_opt))) # tip radius (m)
+NPSH_se = (1.2*(phi_e**2) + (0.2334 + ((ang_vel*r) / 128.3)**4)*((phi_e**2)+1)) # net positive suction head equation (m)
+S_s = ((n*Q)**(1/2) / (NPSH_se)**(3/4)) # suction specific speed equation (unitless)
+phi_opt = (1.3077 * math.sqrt(1 - (v**2)) / (1 + (1/2)*math.sqrt(1 + 10.261*(1 - (v**2)) / S_s))) # optimal flow coefficient (unitless)
+r_tip = ((1.449)*((Q) / (1 - (v**2)*omega*phi_opt))) # tip radius (m)
 alpha = (2*math.pi*r*math.tan(beta_blade)) # blade lead (m) -- distance a blade advances per turn
 h_min = (((alpha*sigma)/N)*math.sin(beta_blade)) # minimum required length of inducer (m)
 
 # ---------------------------------------------------------------------------------------------------
 
-# Section 5: {Volute Geometry Equations} | Calculating
+# Section 5: {Volute Geometry Equations} | Calculating Total Head Change
+
+# initialization
+delta_h_s = 1 # static head (m) -- define later
+phi = 1 # flow coefficient (unitless) -- define later?
+delta_h_v = 1 # velocity head term -- define later
+phi_el = 1 # expansion energy loss (units?) -- define later
+c_i = 1 # incidence angle loss coefficient (unitless) -- define later
+c_m = 1 # mach-number coefficient (unitless) -- define later
+
+psi_ke = math.sqrt((2*(phi_el**2)-1)) # kinetic energy loss coefficient (unitless) -- define later
+delta_h_es = (delta_h_s * (phi**2)) # static head change equation (m)
+delta_h_ev = (delta_h_v * (psi_ke**2) * c_i * c_m) # velocity head change equation (m)
+delta_h_e = delta_h_es + delta_h_ev # total head change euqation (m)
